@@ -1,0 +1,705 @@
+:root {
+  --bg-gradient: linear-gradient(0deg, #9FC3EA, #004CEA, #00001E);
+  --card-bg: #fffeff;
+  --accent: #5c5c9b;
+  --text: #0b0b16;
+  --radius: 28px;
+  --gap: 28px;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg-gradient);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-attachment: fixed;
+}
+
+body {
+  padding: 40px;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+/* === HEADER === */
+.main-header {
+  background: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.main-header .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #007bff;
+}
+
+/* Бургер */
+.menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Бургер */
+.burger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.burger span {
+  width: 25px;
+  height: 3px;
+  background: #333;
+  transition: all 0.3s ease;
+}
+
+/* Меню */
+.dropdown-menu {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  min-width: 180px;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Показываем меню, пока курсор на wrapper или на меню */
+.menu-wrapper:hover .dropdown-menu {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Элементы меню */
+.dropdown-menu a {
+  text-decoration: none;
+  color: #333;
+  padding: 8px 0;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.dropdown-menu a:hover {
+  color: #007bff;
+}
+
+.dropdown-menu hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 10px 0;
+}
+
+/* Кнопки */
+.btn {
+  cursor: pointer;
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid #007bff;
+  color: #007bff;
+  padding: 10px 0;
+  width: 100%;
+  transition: background 0.3s, color 0.3s;
+}
+
+.btn.ghost:hover {
+  background: #007bff;
+  color: #fff;
+}
+
+.btn.primary {
+  background: #007bff;
+  color: #fff;
+  padding: 10px 0;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+.btn.primary:hover {
+  background: #0056b3;
+}
+
+
+/* === INTRO === */
+.intro-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 120px 20px 60px; /* учитываем фиксированный header */
+  text-align: center;
+}
+
+.intro h1 {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+.intro p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #f1f1f1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* === CARD / HERO === */
+.card {
+  width: min(1500px, 96%);
+  background: var(--card-bg);
+  border-radius: 40px;
+  box-shadow: 0 20px 60px rgba(10,10,30,0.25);
+  overflow: hidden;
+  margin-bottom: 40px;
+  padding: 40px;
+}
+
+.hero {
+  display: grid;
+  gap: 40px;
+  align-items: center;
+}
+
+.hero-left h1 {
+  font-size: 36px;
+  margin-bottom: 12px;
+  font-weight: 800;
+  color: #121224;
+}
+
+.hero-left p {
+  color: #4b4b7b;
+  margin-bottom: 20px;
+  max-width: 56ch;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.features {
+  margin-top: 10px;
+  color: #6c6c90;
+  list-style: none;
+  display: flex;
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.features li {
+  font-weight: 600;
+}
+
+/* === TARIFF CAROUSEL === */
+.tariff-carousel {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.6s ease-in-out;
+
+}
+
+.carousel-item {
+  flex: 0 0 100%;
+  padding: 10px;
+  background: #ffffff;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: bold;
+  border-radius: 15px;
+
+
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background-color: #ccc;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active,
+.dot:hover {
+  background-color: #00c6ff;
+}
+
+
+.dot.active {
+  background-color: #0078ff;
+  transform: scale(1.3);
+}
+
+/* === CONTACT SECTION === */
+.contact-section {
+  padding: 60px 20px;
+  background: #ffffff;
+}
+
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 280px;
+}
+
+.contact-info h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.contact-info a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.contact-info a:hover {
+  text-decoration: underline;
+}
+
+.contact-form {
+  flex: 1;
+  min-width: 280px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-form h3 {
+  font-size: 22px;
+}
+
+.contact-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+}
+
+.contact-form input {
+  margin-top: 5px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.contact-form input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+}
+
+.contact-form .btn.primary {
+  margin-top: 10px;
+}
+
+/* === FOOTER === */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 36px;
+  border-top: 1px solid rgba(15,15,60,0.04);
+  background: linear-gradient(0deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+  color: #22223a;
+}
+
+/* === MEDIA QUERIES === */
+@media (max-width: 1000px) {
+  .hero { grid-template-columns: 1fr 360px; gap: 20px; }
+}
+
+@media (max-width: 768px) {
+  .contact-container { flex-direction: column; }
+  .hero { grid-template-columns: 1fr; }
+}
+
+
+/* ===== Стили блока отзывов ===== */
+.reviews-section {
+  min-width: 800px;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 40px 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.reviews-section h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.review-form .form-group {
+  margin-bottom: 15px;
+}
+
+.review-form input,
+.review-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.review-form input:focus,
+.review-form textarea:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+.review-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.review-form .btn {
+  display: block;
+  margin: 0 auto;
+  background: #007BFF;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.review-form .btn:hover {
+  background: #0056b3;
+}
+
+/* Рейтинг звездами */
+.stars {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+}
+
+.stars input {
+  display: none;
+}
+
+.stars label {
+  font-size: 1.8rem;
+  color: #ccc;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.2s;
+}
+
+.stars input:checked ~ label,
+.stars label:hover,
+.stars label:hover ~ label {
+  color: #FFD700;
+}
+
+/* Отзывы */
+.reviews-list {
+  margin-top: 30px;
+}
+
+.review-item {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.review-text {
+  font-style: italic;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.review-author {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.review-stars {
+  color: #FFD700;
+  font-size: 1.4rem;
+}
+
+/* Только для первой карточки */
+.carousel-item .tariff-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.tariff-title {
+  color: #0b0b16;
+}
+.tariff-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+}
+
+.tariff-icon {
+  font-size: 1.8rem;
+}
+
+.tariff-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #444;
+}
+.tariff-description-2 {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #444;
+}
+.tariff-block {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #444;
+
+}
+.tariff-block-2 {
+  font-size: 0.90rem;
+  line-height: 1.5;
+  color: #444;
+
+}
+.tariff-block ol  {
+  margin-top: 8px;
+  padding-left: 20px;
+  list-style-type: none;
+}
+.tariff-block-2 ol  {
+  margin-top: 8px;
+  padding-left: 20px;
+  list-style-type: none;
+
+}
+.tariff-card button {
+  color: #ffffff;
+  background-color:#0078ff;
+  min-width: 150px;
+  min-height: 40px
+  
+
+}
+.tariff-info div {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .carousel-item .tariff-card {
+    padding: 16px;
+  }
+  .tariff-header {
+    font-size: 1rem;
+  }
+  .tariff-icon {
+    font-size: 1.5rem;
+  }
+}
+/* ==== Бургер меню ==== */
+header {
+  position: relative;
+}
+
+.burger-btn {
+  font-size: 28px;
+  cursor: pointer;
+  user-select: none;
+  padding: 10px;
+}
+
+.burger-menu {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 10px 0;
+  min-width: 180px;
+  z-index: 1000;
+}
+
+.burger-menu.open {
+  display: block;
+}
+
+.burger-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.burger-menu li {
+  padding: 10px 20px;
+}
+
+.burger-menu li:hover {
+  background: #f0f0f0;
+}
+
+
+        .profile-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 420px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-item {
+            margin-bottom: 12px;
+        }
+        .profile-item span {
+            font-weight: bold;
+            display: inline-block;
+            width: 140px;
+        }
+        .logout-btn, .edit-btn, .save-btn, .cancel-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            font-size: 15px;
+        }
+        .logout-btn { background-color: #ef4444; }
+        .logout-btn:hover { background-color: #dc2626; }
+        .edit-btn { background-color: #3b82f6; }
+        .edit-btn:hover { background-color: #2563eb; }
+        .save-btn { background-color: #10b981; display: none; }
+        .save-btn:hover { background-color: #059669; }
+        .cancel-btn { background-color: #6b7280; display: none; }
+        .cancel-btn:hover { background-color: #4b5563; }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+        .edit-form {
+            display: none;
+        }
+        .features {
+  margin-top: 10px;
+  color: #6c6c90;
+  list-style: none;
+  display: flex;
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.features li {
+  font-weight: 600;
+}
+
+.works {
+  margin-bottom: 40px;
+}
