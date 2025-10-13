@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>It-support-login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <script src="burger.js"></script>
+</head>
+
+<body>
+    <main class="page">
+        <header class="main-header">
+            <div class="container">
+                <div class="logo">IT - поддержка</div>
+
+                <div class="menu-wrapper">
+                    <div class="burger" id="burger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="index.html">О нас</a>
+                        <a href="index.html#carusel">Тарифы</a>
+                        <a href="index.html#contact">Контакты</a>
+                        <a href="works.html">Работы</a>
+                        <a href="review.html">Отзывы</a>
+                        <hr>
+                        <a href="login.html"><button class="btn ghost">Вход</button></a>
+                        <a href="register.html"><button class="btn primary">Регистрация</button></a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <div class="card">
+            <section class="reviews-section">
+                <h2>Оставить отзыв</h2>
+                <form class="review-form">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Ваше имя" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="position" placeholder="Должность" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="company" placeholder="Компания" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Ваш отзыв" required></textarea>
+                    </div>
+                    <div class="form-group rating">
+                        <label>
+                            <center>Рейтинг:</center>
+                        </label>
+                        <div class="stars">
+                            <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                            <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                            <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                            <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                            <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Отправить отзыв</button>
+                </form>
+            </section>
+            <section class="reviews-section">
+                <h2>Отзывы о компании</h2>
+                <div class="reviews-list">
+                    <div class="review-item">
+                        <p class="review-text">“Работаем с компанией IT-Тех Поддержка уже больше года. За это время ни
+                            разу
+                            не
+                            столкнулись с длительными простоями или неразрешёнными инцидентами.
+                            Команда реагирует моментально — даже в нерабочие часы. Отдельно хочу отметить их прозрачную
+                            систему
+                            отчётности: всегда понятно, что сделано и сколько это стоит.
+                            Благодаря им мы наконец перестали «гасить пожары» в IT и начали спокойно работать.”</p>
+                        <p class="review-author"><strong>Алексей Смирнов</strong>, руководитель отдела продаж, ООО
+                            “ТехноПрофи”
+                        </p>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                </div>
+
+            </section>
+
+
+
+            </section>
+            <footer class="card-footer">
+                <div>© 2025 Компания</div>
+                <div class="footer-links">
+                    <a href="#">Политика</a>
+                    <a href="#">Поддержка</a>
+                </div>
+            </footer>
+        </div>
+
+
+
+    </main>
+</body>
+
+</html>

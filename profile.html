@@ -1,67 +1,78 @@
-
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личный кабинет</title>
     <link rel="stylesheet" href="style.css">
-    
+
 </head>
+
 <body>
     <p>ㅤ</p>
     <p>ㅤ</p>
     <main class="page">
         <header class="main-header">
-                <div class="container">
-                    <div class="logo">IT - поддержка</div>
+            <div class="container">
+                <div class="logo">IT - поддержка</div>
 
-                    <div class="menu-wrapper">
-                        <div class="burger" id="burger">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
+                <div class="menu-wrapper">
+                    <div class="burger" id="burger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
 
-                        <div class="dropdown-menu" id="dropdown-menu">
-                            <a href="index.html">О нас</a>
-                            <a href="#">Тарифы</a>
-                            <a href="#">Контакты</a>
-                            <a href="#">Отзывы</a>
-                            <hr>
-                            <a href="login.html"><button class="btn ghost" >Вход</button></a>
-                            <a href="register.html"><button class="btn primary">Регистрация</button></a>
-                        </div>
-
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="index.html">О нас</a>
+                        <a href="index.html#carusel">Тарифы</a>
+                        <a href="index.html#contact">Контакты</a>
+                        <a href="works.html">Работы</a>
+                        <a href="review.html">Отзывы</a>
+                        <hr>
+                        <a href="login.html"><button class="btn ghost">Вход</button></a>
+                        <a href="register.html"><button class="btn primary">Регистрация</button></a>
                     </div>
 
                 </div>
 
-            </header>
-    <div class="profile-container">
-        <h2>Личный кабинет</h2>
-        <div id="view-mode">
-            <div class="profile-item"><span>ФИО:</span> <span id="fio">Иванов Иван Иванович</span></div>
-            <div class="profile-item"><span>Email:</span> <span id="email">ivanov@example.com</span></div>
-            <div class="profile-item"><span>Тариф:</span> <span id="plan">Premium</span></div>
-            <div class="profile-item"><span>Дата регистрации:</span> <span id="date">12.05.2023</span></div>
-            <div class="profile-item"><span>Телефон:</span> <span id="phone">+7 (900) 123-45-67</span></div>
-            <div class="profile-item"><span>Город:</span> <span id="city">Москва</span></div>
-            <button class="edit-btn" onclick="enterEditMode()">Редактировать</button>
-            <a href="login.html" class="logout-btn">Выйти</a>
-        </div>
+            </div>
 
-        <form id="edit-mode" class="edit-form">
-            <input type="text" id="edit-fio" placeholder="ФИО">
-            <input type="email" id="edit-email" placeholder="Email">
-            <input type="text" id="edit-plan" placeholder="Тариф">
-            <input type="text" id="edit-date" placeholder="Дата регистрации">
-            <input type="text" id="edit-phone" placeholder="Телефон">
-            <input type="text" id="edit-city" placeholder="Город">
-            <button type="button" class="save-btn" onclick="saveChanges()">Сохранить</button>
-            <button type="button" class="cancel-btn" onclick="cancelEdit()">Отмена</button>
-        </form>
-    </div>
+        </header>
+        <div class="card">
+            <div class="profile-container">
+                <h2>Личный кабинет</h2>
+                <div id="view-mode">
+                    <div class="profile-item"><span>ФИО:</span> <span id="fio">Иванов Иван Иванович</span></div>
+                    <div class="profile-item"><span>Email:</span> <span id="email">ivanov@example.com</span></div>
+                    <div class="profile-item"><span>Тариф:</span> <span id="plan">Premium</span></div>
+                    <div class="profile-item"><span>Дата регистрации:</span> <span id="date">12.05.2023</span></div>
+                    <div class="profile-item"><span>Телефон:</span> <span id="phone">+7 (900) 123-45-67</span></div>
+                    <div class="profile-item"><span>Город:</span> <span id="city">Москва</span></div>
+                    <button class="edit-btn" onclick="enterEditMode()">Редактировать</button>
+                    <a href="login.html" class="logout-btn">Выйти</a>
+                </div>
+
+                <form id="edit-mode" class="edit-form">
+                    <input type="text" id="edit-fio" placeholder="ФИО">
+                    <input type="email" id="edit-email" placeholder="Email">
+                    <input type="text" id="edit-plan" placeholder="Тариф">
+                    <input type="text" id="edit-date" placeholder="Дата регистрации">
+                    <input type="text" id="edit-phone" placeholder="Телефон">
+                    <input type="text" id="edit-city" placeholder="Город">
+                    <button type="button" class="save-btn" onclick="saveChanges()">Сохранить</button>
+                    <button type="button" class="cancel-btn" onclick="cancelEdit()">Отмена</button>
+                </form>
+            </div>
+            <footer class="card-footer">
+                <div>© 2025 Компания</div>
+                <div class="footer-links">
+                    <a href="#">Политика</a>
+                    <a href="#">Поддержка</a>
+                </div>
+            </footer>
+        </div>
     </main>
     <script>
         const fioEl = document.getElementById('fio');
@@ -108,4 +119,5 @@
         }
     </script>
 </body>
+
 </html>

@@ -1,57 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>It-support-login</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="style.css" />
-        <script src="burger.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <script src="burger.js"></script>
 </head>
+
 <body>
     <p>ㅤ</p>
     <main class="page">
         <header class="main-header">
-                <div class="container">
-                    <div class="logo">IT - поддержка</div>
+            <div class="container">
+                <div class="logo">IT - поддержка</div>
 
-                    <div class="menu-wrapper">
-                        <div class="burger" id="burger">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
+                <div class="menu-wrapper">
+                    <div class="burger" id="burger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
 
-                        <div class="dropdown-menu" id="dropdown-menu">
-                            <a href="index.html">О нас</a>
-                            <a href="#">Тарифы</a>
-                            <a href="#">Контакты</a>
-                            <a href="#">Отзывы</a>
-                            <hr>
-                            <a href="login.html"><button class="btn ghost" >Вход</button></a>
-                            <a href="register.html"><button class="btn primary">Регистрация</button></a>
-                        </div>
-
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="index.html">О нас</a>
+                        <a href="index.html#carusel">Тарифы</a>
+                        <a href="index.html#contact">Контакты</a>
+                        <a href="works.html">Работы</a>
+                        <a href="review.html">Отзывы</a>
+                        <hr>
+                        <a href="login.html"><button class="btn ghost">Вход</button></a>
+                        <a href="register.html"><button class="btn primary">Регистрация</button></a>
                     </div>
 
                 </div>
 
-            </header>
+            </div>
+
+        </header>
+        <div class="card">
             <section class="reviews-section">
-                
-  <h2>Вход</h2>
-  <form class="review-form">
-    <div class="form-group">
-      <input type="text" name="login" placeholder="Логин" required>
-    </div>
-    <div class="form-group">
-      <input type="text" name="pass" placeholder="Пароль" required>
-    </div>
-    
-    
-    <button type="submit" class="btn">Войти</button>
-  </form>
-</section>
+
+                <h2>Вход</h2>
+                <form class="review-form">
+                    <div class="form-group">
+                        <input type="text" name="login" placeholder="Логин" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="pass" placeholder="Пароль" required>
+                    </div>
+
+
+                    <button type="submit" class="btn">Войти</button>
+                </form>
+            </section>
+            <footer class="card-footer">
+                <div>© 2025 Компания</div>
+                <div class="footer-links">
+                    <a href="#">Политика</a>
+                    <a href="#">Поддержка</a>
+                </div>
+            </footer>
+        </div>
     </main>
 </body>
+
 </html>

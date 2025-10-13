@@ -15,7 +15,7 @@
 }
 
 html, body {
-  height: 100%;
+  height: 120%;
   background: var(--bg-gradient);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
@@ -244,6 +244,11 @@ body {
   margin: 0 auto;
   position: relative;
   overflow: hidden;
+  margin-top: 30px;
+}
+
+.carusel-text {
+  text-align: justify;
 }
 
 .carousel-container {
@@ -672,8 +677,8 @@ header {
         .logout-btn:hover { background-color: #dc2626; }
         .edit-btn { background-color: #3b82f6; }
         .edit-btn:hover { background-color: #2563eb; }
-        .save-btn { background-color: #10b981; display: none; }
-        .save-btn:hover { background-color: #059669; }
+        .save-btn { background-color: #3b82f6; display: none; }
+        .save-btn:hover { background-color: #3b82f6; }
         .cancel-btn { background-color: #6b7280; display: none; }
         .cancel-btn:hover { background-color: #4b5563; }
         input[type="text"], input[type="email"] {
@@ -702,4 +707,51 @@ header {
 
 .works {
   margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.works-text {
+  max-width: 320px;
+  margin: 20px;
+}
+
+.works-text h3 {
+  text-align: center;
+}
+
+.works-text p {
+  text-align: justify;
+}
+
+.works-page {
+  font-family: "Montserrat", sans-serif;
+  padding: 50px 20px 60px; 
+}
+
+.works-text-2 img {
+  float: right;
+  width: 30%;
+  margin: 0 20px 20px 0;
+  border-radius: 20px;
+}
+
+.works-text-3{
+  margin-top: 20px;
+}
+.works-text-3 img{
+  float: left;
+  border-radius: 20px;
+  margin-right: 20px;
+}
+
+.works-text-4{
+  margin-top: 40px;
+}
+.line {
+  border: none; /* убираем стандартную рамку */
+  height: 2px; /* толщина линии */
+  background-color: #f9fbfe; /* цвет */
+  margin: 20px 0; /* отступы сверху и снизу */
+  border-radius: 10px;
 }
