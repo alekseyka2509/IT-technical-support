@@ -1,0 +1,27 @@
+{
+  "name": "it-support",
+  "version": "1.0.0",
+  "description": "",
+  "main": "burger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alekseyka2509/IT-technical-support.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alekseyka2509/IT-technical-support/issues"
+  },
+  "homepage": "https://github.com/alekseyka2509/IT-technical-support#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}
