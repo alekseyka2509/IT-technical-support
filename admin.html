@@ -166,7 +166,12 @@
               alert('Данные пользователя обновлены');
               loadUsers();
             } else if (res.status === 409) {
-              alert('Пользователь с таким email уже существует');
+              const errorData = await res.json();
+              if (errorData.error === 'phone_exists') {
+                alert('Пользователь с таким номером телефона уже существует');
+              } else {
+                alert('Пользователь с таким email уже существует');
+              }
             } else if (res.status === 400) {
               alert('Проверьте корректность введённых данных');
             } else {

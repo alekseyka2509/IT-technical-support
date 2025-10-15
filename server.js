@@ -31,6 +31,26 @@ function genSessionId() {
   return crypto.randomBytes(24).toString('hex');
 }
 
+function normalizePhone(phone) {
+  if (!phone) return null;
+  // Убираем все символы кроме цифр
+  const digits = phone.replace(/\D/g, '');
+  // Если номер начинается с 8, заменяем на 7
+  if (digits.startsWith('8') && digits.length === 11) {
+    return '7' + digits.slice(1);
+  }
+  // Если номер начинается с 7 и имеет 11 цифр, возвращаем как есть
+  if (digits.startsWith('7') && digits.length === 11) {
+    return digits;
+  }
+  // Если номер имеет 10 цифр, добавляем 7 в начало
+  if (digits.length === 10) {
+    return '7' + digits;
+  }
+  // Возвращаем как есть, если не можем нормализовать
+  return digits;
+}
+
 const sessions = new Map(); // sessionId -> { userId, createdAt }
 
 async function initDb() {
@@ -177,9 +197,31 @@ app.get('/api/me', requireAuth, async (req, res) => {
 });
 
 app.put('/api/me', requireAuth, async (req, res) => {
-  const { full_name, phone, city } = req.body;
-  await db.run('UPDATE users SET full_name = ?, phone = ?, city = ? WHERE id = ?', [full_name || null, phone || null, city || null, req.userId]);
-  res.json({ ok: true });
+  try {
+    const { full_name, phone, city } = req.body;
+    
+    // Проверяем уникальность номера телефона, если он указан
+    if (phone && phone.trim() !== '') {
+      const normalizedPhone = normalizePhone(phone.trim());
+      console.log(`Проверяем телефон: "${phone}" -> нормализованный: "${normalizedPhone}" для пользователя ${req.userId}`);
+      
+      if (normalizedPhone) {
+        const existingUser = await db.get('SELECT id, phone FROM users WHERE phone = ? AND id != ?', [normalizedPhone, req.userId]);
+        if (existingUser) {
+          console.log(`Найден существующий пользователь с ID ${existingUser.id} и телефоном ${existingUser.phone}`);
+          return res.status(409).json({ error: 'phone_exists' });
+        }
+      }
+    }
+    
+    const phoneToSave = phone ? normalizePhone(phone.trim()) : null;
+    await db.run('UPDATE users SET full_name = ?, phone = ?, city = ? WHERE id = ?', [full_name || null, phoneToSave, city || null, req.userId]);
+    console.log(`Обновлен профиль пользователя ${req.userId}: phone="${phone}" -> сохранен как "${phoneToSave}"`);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error('Ошибка при обновлении профиля:', e);
+    res.status(500).json({ error: 'server_error' });
+  }
 });
 
 // Admin APIs
@@ -220,12 +262,30 @@ app.put('/api/admin/users/:id', requireAdmin, async (req, res) => {
     }
     if (normalizedPlan !== null && !ALLOWED_PLANS.includes(normalizedPlan)) return res.status(400).json({ error: 'invalid_plan' });
 
+    // Проверяем уникальность номера телефона, если он указан
+    if (phone && phone.trim() !== '') {
+      const normalizedPhone = normalizePhone(phone.trim());
+      console.log(`Админ проверяет телефон: "${phone}" -> нормализованный: "${normalizedPhone}" для пользователя ${userId}`);
+      
+      if (normalizedPhone) {
+        const existingUser = await db.get('SELECT id, phone FROM users WHERE phone = ? AND id != ?', [normalizedPhone, userId]);
+        if (existingUser) {
+          console.log(`Админ: найден существующий пользователь с ID ${existingUser.id} и телефоном ${existingUser.phone}`);
+          return res.status(409).json({ error: 'phone_exists' });
+        }
+      }
+    }
+
     // Build dynamic update
     const fields = [];
     const params = [];
     if (typeof full_name !== 'undefined') { fields.push('full_name = ?'); params.push(full_name || null); }
     if (typeof email !== 'undefined') { fields.push('email = ?'); params.push(email || null); }
-    if (typeof phone !== 'undefined') { fields.push('phone = ?'); params.push(phone || null); }
+    if (typeof phone !== 'undefined') { 
+      const phoneToSave = phone ? normalizePhone(phone.trim()) : null;
+      fields.push('phone = ?'); 
+      params.push(phoneToSave); 
+    }
     if (typeof city !== 'undefined') { fields.push('city = ?'); params.push(city || null); }
     if (typeof plan !== 'undefined') { fields.push('plan = ?'); params.push(normalizedPlan); }
     if (!fields.length) return res.status(400).json({ error: 'nothing_to_update' });

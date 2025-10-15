@@ -131,7 +131,12 @@
           body: JSON.stringify(payload)
         }).then(async (res) => {
           if (!res.ok) {
-            alert('Не удалось сохранить изменения');
+            const errorData = await res.json();
+            if (errorData.error === 'phone_exists') {
+              alert('Этот номер телефона уже используется другим пользователем');
+            } else {
+              alert('Не удалось сохранить изменения');
+            }
             return;
           }
           fioEl.textContent = payload.full_name;

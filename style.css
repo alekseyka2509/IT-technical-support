@@ -1123,20 +1123,6 @@ input[type="email"] {
   background: #dc2626;
 }
 
-/* Кнопка показа пароля визуально легче */
-.pw-toggle {
-  margin-left: 8px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #dbe3ff;
-  background: #f5f7ff;
-  color: #1a2b5c;
-  font-weight: 600;
-}
-
-.pw-toggle:hover {
-  background: #e9efff;
-}
 
 @media (max-width: 1100px) {
   .admin-row {
