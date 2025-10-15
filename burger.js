@@ -9,12 +9,47 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Update menu based on auth state
-  (async function updateMenuAuthState() {
+  window.setMenuLoggedOut = function() {
+    const menuEl = document.getElementById('dropdown-menu');
+    if (!menuEl) return;
+    // Remove profile link if present
+    const profileLink = Array.from(menuEl.querySelectorAll('a')).find(a => a.getAttribute('href') === 'profile.html');
+    if (profileLink) profileLink.remove();
+    const adminLink = Array.from(menuEl.querySelectorAll('a')).find(a => a.getAttribute('href') === 'admin.html');
+    if (adminLink) adminLink.remove();
+
+    // Ensure there is an <hr> separator before auth buttons
+    const hasHr = !!menuEl.querySelector('hr');
+    if (!hasHr) {
+      const hr = document.createElement('hr');
+      menuEl.appendChild(hr);
+    }
+
+    // Avoid duplicates of login/register
+    const loginBtnLink = Array.from(menuEl.querySelectorAll('a')).find(a => a.getAttribute('href') === 'login.html');
+    const registerBtnLink = Array.from(menuEl.querySelectorAll('a')).find(a => a.getAttribute('href') === 'register.html');
+    if (!loginBtnLink) {
+      const a = document.createElement('a');
+      a.href = 'login.html';
+      a.innerHTML = '<button class="btn ghost">Вход</button>';
+      menuEl.appendChild(a);
+    }
+    if (!registerBtnLink) {
+      const a = document.createElement('a');
+      a.href = 'register.html';
+      a.innerHTML = '<button class="btn primary">Регистрация</button>';
+      menuEl.appendChild(a);
+    }
+  };
+
+  window.updateMenuAuthState = async function() {
     const menuEl = document.getElementById('dropdown-menu');
     if (!menuEl) return;
     try {
       const res = await fetch('/api/me');
       if (res.ok) {
+        const data = await res.json();
+        const role = data && data.user && data.user.role;
         const profileLink = document.createElement('a');
         profileLink.href = 'profile.html';
         profileLink.innerHTML = '<button class="btn primary">Личный кабинет</button>';
@@ -28,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Avoid duplicates
         const existingProfile = Array.from(menuEl.querySelectorAll('a')).find(a => a.getAttribute('href') === 'profile.html');
         if (!existingProfile) {
-          // Insert a separator if last element before was not an <hr>
           const lastHr = menuEl.querySelector('hr');
           if (!lastHr) {
             const hr = document.createElement('hr');
@@ -36,14 +70,27 @@ document.addEventListener('DOMContentLoaded', function() {
           }
           menuEl.appendChild(profileLink);
         }
+
+        // Admin link when role is admin
+        const existingAdmin = Array.from(menuEl.querySelectorAll('a')).find(a => a.getAttribute('href') === 'admin.html');
+        if (role === 'admin' && !existingAdmin) {
+          const adminLink = document.createElement('a');
+          adminLink.href = 'admin.html';
+          adminLink.innerHTML = '<button class="btn ghost">Администрирование</button>';
+          menuEl.appendChild(adminLink);
+        }
+      } else {
+        window.setMenuLoggedOut();
       }
     } catch (_) {
-      // ignore
+      window.setMenuLoggedOut();
     }
-  })();
+  };
+
+  window.updateMenuAuthState();
 
   // LOGIN
-  if (document.title.toLowerCase().includes('login')) {
+  if (location.pathname.endsWith('login.html')) {
     const loginForm = document.querySelector('form.review-form');
     if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
@@ -65,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // REGISTER
-  if (document.title.toLowerCase().includes('register')) {
+  if (location.pathname.endsWith('register.html')) {
     const registerForm = document.querySelector('form.review-form');
     if (registerForm) {
       registerForm.addEventListener('submit', async (e) => {
@@ -174,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const cityEl = document.getElementById('city');
           if (fioEl) fioEl.textContent = user.full_name || '';
           if (emailEl) emailEl.textContent = user.email || '';
-          if (planEl) planEl.textContent = user.plan || '';
+          if (planEl) planEl.textContent = user.plan || 'Нет тарифа';
           if (dateEl) dateEl.textContent = (user.created_at || '').slice(0, 10);
           if (phoneEl) phoneEl.textContent = user.phone || '';
           if (cityEl) cityEl.textContent = user.city || '';

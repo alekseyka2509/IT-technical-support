@@ -354,6 +354,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  margin-bottom: 40px;
 }
 
 .contact-form h3 {
@@ -541,34 +542,42 @@ body {
 }
 .tariff-title {
   color: #0b0b16;
+  margin: 0;
 }
 .tariff-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
   font-size: 1.2rem;
 }
 
 .tariff-icon {
   font-size: 1.8rem;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .tariff-description {
   font-size: 0.95rem;
   line-height: 1.5;
   color: #444;
+  margin-bottom: 0;
 }
 .tariff-description-2 {
   font-size: 0.85rem;
   line-height: 1.5;
   color: #444;
+  margin-bottom: 0;
 }
 .tariff-block {
+  margin-top: 0;
   font-size: 0.95rem;
   line-height: 1.5;
   color: #444;
 }
 .tariff-block-2 {
+  margin-top: 0;
   font-size: 0.9rem;
   line-height: 1.5;
   color: #444;
@@ -600,10 +609,13 @@ body {
     padding: 16px;
   }
   .tariff-header {
-    font-size: 1rem;
+    gap: 10;
+    display: flex;
+    align-items: center;
   }
   .tariff-icon {
     font-size: 1.5rem;
+    line-height: 1;
   }
 }
 /* ==== Бургер меню ==== */
@@ -650,67 +662,100 @@ header {
 }
 
 .profile-container {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  max-width: 420px;
   width: 100%;
 }
-h2 {
+
+.profile-container h2 {
   text-align: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 20px; /* немного меньше отступ */
+}
+
+/* Профильные строки с разделением */
+.profile-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px; /* ближе друг к другу */
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb; /* разделитель между пунктами */
+  font-size: 1rem;
+  color: #444;
   margin-bottom: 20px;
 }
-.profile-item {
-  margin-bottom: 12px;
+
+.profile-item span:first-child {
+  font-weight: 600;
+  margin-right: 10px;
 }
-.profile-item span {
-  font-weight: bold;
-  display: inline-block;
-  width: 140px;
+
+/* Поля формы редактирования */
+.edit-form input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
 }
-.logout-btn,
+
+/* Кнопки на одной линии и одинакового размера */
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
 .edit-btn,
+.logout-btn,
 .save-btn,
 .cancel-btn {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 8px;
-  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.3s;
   border: none;
-  font-size: 15px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 10px;
 }
-.logout-btn {
-  background-color: #ef4444;
-}
-.logout-btn:hover {
-  background-color: #dc2626;
-}
-.edit-btn {
-  background-color: #3b82f6;
-}
-.edit-btn:hover {
-  background-color: #2563eb;
-}
+
+/* Синие кнопки (Редактировать и Сохранить) */
+.edit-btn,
 .save-btn {
-  background-color: #3b82f6;
-  display: none;
+  background: #3b82f6;
+  color: #fff;
 }
+
+.edit-btn:hover,
 .save-btn:hover {
-  background-color: #3b82f6;
+  background: #0056b3;
 }
+
+/* Красные кнопки (Выйти и Отмена) */
+.logout-btn,
 .cancel-btn {
-  background-color: #6b7280;
+  background: #ef4444;
+  color: #fff;
+}
+
+.logout-btn:hover,
+.cancel-btn:hover {
+  background: #dc2626;
+}
+
+/* Скрываем кнопки редактирования по умолчанию */
+.save-btn,
+.cancel-btn {
   display: none;
 }
-.cancel-btn:hover {
-  background-color: #4b5563;
-}
+
 input[type="text"],
 input[type="email"] {
   width: 100%;
@@ -735,15 +780,29 @@ input[type="email"] {
   font-weight: 600;
 }
 
+.works {
+  display: flex;
+  justify-content: center;
+  align-items: stretch; /* все блоки одинаковой высоты */
+  gap: 20px;
+  flex-wrap: wrap; /* чтобы адаптивно переносились */
+  margin-bottom: 40px;
+}
+
 .works-text {
-  max-width: 420px;
-  margin: 30px;
+  flex: 1; /* равномерное распределение ширины */
+  min-width: 300px; /* чтобы не были слишком узкими */
+  max-width: 500px;
+  margin: 10px;
   padding: 20px 25px;
-  border-left: 4px solid #007bff; /* синий акцентный штрих слева */
-  background: rgba(255, 255, 255, 0.7); /* лёгкий прозрачный фон */
+  border-left: 4px solid #007bff;
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 50, 0.05); /* мягкая тень */
-  backdrop-filter: blur(4px); /* эффект “стекла” */
+  box-shadow: 0 4px 12px rgba(0, 0, 50, 0.05);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column; /* чтобы внутренние элементы располагались вертикально */
+  justify-content: flex-start; /* выравнивадкание текста по высоте */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -775,6 +834,71 @@ input[type="email"] {
   text-align: justify;
   text-indent: 20px;
   font-size: 0.97rem;
+}
+
+.works-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.works-carousel::-webkit-scrollbar {
+  display: none; /* скрываем скроллбар для чистоты */
+}
+
+.carousel-item {
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.carousel-item:hover {
+  transform: translateY(-4px);
+}
+
+.carousel-item h3 {
+  font-size: 1.2rem;
+  color: #0b0b16;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.carousel-item p {
+  text-align: justify;
+  text-indent: 20px;
+  line-height: 1.6;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.tariff-block {
+  display: flex;
+  flex-direction: column; /* вертикальное расположение */
+  align-items: flex-start; /* ← выравнивание по левому краю */
+  text-align: left; /* ← текст также по левому краю */
+  gap: 5px;
+  padding: 20px;
+}
+
+.tariff-block ol {
+  margin: 0;
+  text-align: left;
+}
+
+.tariff-block li {
+  line-height: 1.6;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.tariff-info {
+  align-self: flex-start; /* прижимаем к левому краю */
+  text-align: left;
+  line-height: 1.6;
+  color: #444;
 }
 
 .works-page {
@@ -905,4 +1029,119 @@ input[type="email"] {
   background-color: #e6f0ff; /* цвет */
   margin: 20px 0; /* отступы сверху и снизу */
   border-radius: 10px;
+}
+
+/* ===== Админка ===== */
+.tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 10px 0 20px;
+}
+
+.tabs .btn {
+  padding: 10px 18px;
+  background: #f5f7ff;
+  color: #1a2b5c;
+  border: 1px solid #e3e9ff;
+  border-radius: 10px;
+}
+
+.tabs .btn:hover {
+  background: #e9efff;
+}
+
+.admin-tab h3 {
+  text-align: left;
+  margin: 10px 0 15px;
+  color: #0b0b16;
+}
+
+/* Список/таблица */
+#users-list, #callbacks-list, #reviews-list {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-row {
+  display: grid;
+  grid-template-columns: 60px 1.2fr 1.2fr 1fr 1fr 120px 260px;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid #eef2ff;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 50, 0.05);
+}
+
+.admin-row input.input,
+.admin-row select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #dbe3ff;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+}
+
+.admin-row select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #8aa2ff 50%),
+    linear-gradient(135deg, #8aa2ff 50%, transparent 50%),
+    linear-gradient(to right, #ccd6ff, #ccd6ff);
+  background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px), calc(100% - 2.5em) 0.5em;
+  background-size: 5px 5px, 5px 5px, 1px 1.6em;
+  background-repeat: no-repeat;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 10px;
+  margin: 10px 0 18px;
+}
+
+.filters .input {
+  padding: 10px 12px;
+  border: 1px solid #dbe3ff;
+  border-radius: 10px;
+}
+
+.btn.small {
+  padding: 8px 12px;
+  border-radius: 8px;
+  width: auto;
+}
+
+.btn.danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn.danger:hover {
+  background: #dc2626;
+}
+
+/* Кнопка показа пароля визуально легче */
+.pw-toggle {
+  margin-left: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #dbe3ff;
+  background: #f5f7ff;
+  color: #1a2b5c;
+  font-weight: 600;
+}
+
+.pw-toggle:hover {
+  background: #e9efff;
+}
+
+@media (max-width: 1100px) {
+  .admin-row {
+    grid-template-columns: 50px 1fr 1fr 1fr;
+    grid-auto-rows: auto;
+    grid-row-gap: 8px;
+  }
 }

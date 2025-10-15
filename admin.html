@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Администрирование</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="burger.js"></script>
+    <script src="mask.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="main-header">
+        <div class="container">
+          <a href="index.html" class="logo">IT-поддержка</a>
+          <div class="menu-wrapper">
+            <div class="burger" id="burger">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu">
+              <a href="index.html">О нас</a>
+              <a href="index.html#carusel">Тарифы</a>
+              <a href="index.html#contact">Контакты</a>
+              <a href="works.html">Работы</a>
+              <a href="review.html">Отзывы</a>
+              <hr />
+              <a href="login.html"><button class="btn ghost">Вход</button></a>
+              <a href="register.html"><button class="btn primary">Регистрация</button></a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="card">
+        <div class="profile-container">
+          <h2>Администрирование</h2>
+          <div class="tabs">
+            <button class="btn" data-tab="users">Пользователи</button>
+            <button class="btn" data-tab="callbacks">Заявки</button>
+            <button class="btn" data-tab="reviews">Отзывы</button>
+          </div>
+
+          <section id="tab-users" class="admin-tab">
+            <h3>Пользователи</h3>
+            <div class="filters">
+              <input type="text" id="userSearchFio" class="input" placeholder="Поиск по ФИО">
+              <input type="email" id="userSearchEmail" class="input" placeholder="Поиск по Email">
+              <input type="tel" id="userSearchPhone" class="input" placeholder="+7 (___) ___-__-__">
+            </div>
+            <div id="users-list"></div>
+          </section>
+
+          <section id="tab-callbacks" class="admin-tab" style="display:none">
+            <h3>Заявки на связь</h3>
+            <div class="filters">
+              <input type="text" id="callbackSearchName" class="input" placeholder="Поиск по ФИО">
+              <input type="tel" id="callbackSearchPhone" class="input" placeholder="+7 (___) ___-__-__">
+            </div>
+            <div id="callbacks-list"></div>
+          </section>
+
+          <section id="tab-reviews" class="admin-tab" style="display:none">
+            <h3>Отзывы</h3>
+            <div class="filters">
+              <select id="reviewsRating" class="input">
+                <option value="">Все оценки</option>
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+              </select>
+            </div>
+            <div id="reviews-list"></div>
+          </section>
+        </div>
+        <footer class="card-footer">
+          <div>© 2025 Компания</div>
+          <div class="footer-links">
+            <a href="#">Политика</a>
+            <a href="#">Поддержка</a>
+          </div>
+        </footer>
+      </div>
+    </main>
+
+    <script>
+      const tabs = document.querySelectorAll('.tabs .btn');
+      const tabSections = {
+        users: document.getElementById('tab-users'),
+        callbacks: document.getElementById('tab-callbacks'),
+        reviews: document.getElementById('tab-reviews'),
+      };
+      tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          Object.values(tabSections).forEach(s => s.style.display = 'none');
+          tabSections[btn.dataset.tab].style.display = 'block';
+        });
+      });
+
+      async function guardAdmin() {
+        const res = await fetch('/api/me');
+        if (!res.ok) {
+          window.location.href = 'login.html';
+          return null;
+        }
+        const { user } = await res.json();
+        if (!user || user.role !== 'admin') {
+          window.location.href = 'index.html';
+          return null;
+        }
+        return user;
+      }
+
+      let allUsers = [];
+      function renderUsers(users) {
+        const root = document.getElementById('users-list');
+        root.innerHTML = '';
+        const plans = ['','Базовый', 'Стандарт', 'Премиум'];
+        users.forEach(u => {
+          const row = document.createElement('div');
+          row.className = 'admin-row';
+          row.innerHTML = `
+            <div><strong>#${u.id}</strong></div>
+            <div><input type="text" class="input" data-field="full_name" data-user-id="${u.id}" value="${u.full_name || ''}" placeholder="ФИО"></div>
+            <div><input type="email" class="input" data-field="email" data-user-id="${u.id}" value="${u.email || ''}" placeholder="Email"></div>
+            <div><input type="tel" class="input" data-field="phone" data-user-id="${u.id}" value="${u.phone || ''}" placeholder="+7 (___) ___-__-__"></div>
+            <div><input type="text" class="input" data-field="city" data-user-id="${u.id}" value="${u.city || ''}" placeholder="Город" data-mask="city"></div>
+            <div>${(u.created_at || '').slice(0,10)}</div>
+            <div>
+              <select data-field="plan" data-user-id="${u.id}">
+                ${plans.map(p => {
+                  const label = p === '' ? 'Нет тарифа' : p;
+                  const selected = (u.plan || '') === p ? 'selected' : '';
+                  return `<option value="${p}" ${selected}>${label}</option>`;
+                }).join('')}
+              </select>
+              <button class="btn small" data-action="save-user" data-user-id="${u.id}">Сохранить</button>
+            </div>
+          `;
+          root.appendChild(row);
+        });
+        root.querySelectorAll('button[data-action="save-user"]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const userId = btn.getAttribute('data-user-id');
+            const payload = {};
+            root.querySelectorAll(`[data-user-id="${userId}"]`).forEach(el => {
+              const field = el.getAttribute('data-field');
+              if (!field) return;
+              if (el.tagName.toLowerCase() === 'select' || el.tagName.toLowerCase() === 'input') {
+                payload[field] = el.value;
+              }
+            });
+            // Normalize 'Нет тарифа' to null
+            if (payload.plan === '') payload.plan = null;
+            if (payload.plan && payload.plan.toLowerCase && payload.plan.toLowerCase() === 'нет тарифа') payload.plan = null;
+            const res = await fetch(`/api/admin/users/${userId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+              alert('Данные пользователя обновлены');
+              loadUsers();
+            } else if (res.status === 409) {
+              alert('Пользователь с таким email уже существует');
+            } else if (res.status === 400) {
+              alert('Проверьте корректность введённых данных');
+            } else {
+              alert('Ошибка сохранения');
+            }
+          });
+        });
+      }
+
+      let allCallbacks = [];
+      function renderCallbacks(callbacks) {
+        const root = document.getElementById('callbacks-list');
+        root.innerHTML = '';
+        callbacks.forEach(c => {
+          const row = document.createElement('div');
+          row.className = 'admin-row';
+          row.innerHTML = `
+            <div><strong>#${c.id}</strong></div>
+            <div>${c.name}</div>
+            <div>${c.phone}</div>
+            <div>${(c.created_at || '').slice(0,10)}</div>
+          `;
+          root.appendChild(row);
+        });
+      }
+
+      let allReviews = [];
+      function renderReviews(reviews) {
+        const root = document.getElementById('reviews-list');
+        root.innerHTML = '';
+        reviews.forEach(r => {
+          const row = document.createElement('div');
+          row.className = 'admin-row';
+          row.innerHTML = `
+            <div><strong>#${r.id}</strong></div>
+            <div>${r.name}</div>
+            <div>${r.company || ''}</div>
+            <div>${r.message}</div>
+            <div>★${r.rating}</div>
+            <div>${(r.created_at || '').slice(0,10)}</div>
+            <div><button class="btn danger small" data-action="delete" data-id="${r.id}">Удалить</button></div>
+          `;
+          root.appendChild(row);
+        });
+        root.querySelectorAll('button[data-action="delete"]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.getAttribute('data-id');
+            if (!confirm('Удалить отзыв?')) return;
+            const res = await fetch(`/api/admin/reviews/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+              loadReviews();
+            } else {
+              alert('Ошибка удаления отзыва');
+            }
+          });
+        });
+      }
+
+      async function loadUsers() {
+        const res = await fetch('/api/admin/users');
+        if (!res.ok) return alert('Ошибка загрузки пользователей');
+        const data = await res.json();
+        allUsers = data.users || [];
+        applyUsersFilter();
+      }
+
+      async function loadCallbacks() {
+        const res = await fetch('/api/admin/callbacks');
+        if (!res.ok) return alert('Ошибка загрузки заявок');
+        const data = await res.json();
+        allCallbacks = data.callbacks || [];
+        applyCallbacksFilter();
+      }
+
+      async function loadReviews() {
+        const res = await fetch('/api/admin/reviews');
+        if (!res.ok) return alert('Ошибка загрузки отзывов');
+        const data = await res.json();
+        allReviews = data.reviews || [];
+        applyReviewsFilter();
+      }
+
+      function applyUsersFilter() {
+        const fio = (document.getElementById('userSearchFio').value || '').toLowerCase();
+        const email = (document.getElementById('userSearchEmail').value || '').toLowerCase();
+        const phone = (document.getElementById('userSearchPhone').value || '').toLowerCase();
+        const filtered = allUsers.filter(u => {
+          const fFull = (u.full_name || '').toLowerCase();
+          const fEmail = (u.email || '').toLowerCase();
+          const fPhone = (u.phone || '').toLowerCase();
+          return (!fio || fFull.includes(fio)) && (!email || fEmail.includes(email)) && (!phone || fPhone.includes(phone));
+        });
+        renderUsers(filtered);
+      }
+
+      function applyCallbacksFilter() {
+        const name = (document.getElementById('callbackSearchName').value || '').toLowerCase();
+        const phone = (document.getElementById('callbackSearchPhone').value || '').toLowerCase();
+        const filtered = allCallbacks.filter(c => {
+          const fName = (c.name || '').toLowerCase();
+          const fPhone = (c.phone || '').toLowerCase();
+          return (!name || fName.includes(name)) && (!phone || fPhone.includes(phone));
+        });
+        renderCallbacks(filtered);
+      }
+
+      function applyReviewsFilter() {
+        const ratingVal = document.getElementById('reviewsRating').value;
+        const filtered = ratingVal ? allReviews.filter(r => String(r.rating) === ratingVal) : allReviews.slice();
+        renderReviews(filtered);
+      }
+
+      (async function init() {
+        const me = await guardAdmin();
+        if (!me) return;
+        // Default tab
+        document.querySelector('.tabs .btn[data-tab="users"]').click();
+        await loadUsers();
+        await loadCallbacks();
+        await loadReviews();
+        // Wire filters
+        document.getElementById('userSearchFio').addEventListener('input', applyUsersFilter);
+        document.getElementById('userSearchEmail').addEventListener('input', applyUsersFilter);
+        document.getElementById('userSearchPhone').addEventListener('input', applyUsersFilter);
+        document.getElementById('callbackSearchName').addEventListener('input', applyCallbacksFilter);
+        document.getElementById('callbackSearchPhone').addEventListener('input', applyCallbacksFilter);
+        document.getElementById('reviewsRating').addEventListener('change', applyReviewsFilter);
+      })();
+    </script>
+  </body>
+  </html>
+
+

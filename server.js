@@ -50,6 +50,7 @@ async function initDb() {
       phone TEXT,
       city TEXT,
       plan TEXT,
+      role TEXT DEFAULT 'user',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -72,6 +73,31 @@ async function initDb() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
+
+  // Ensure role column exists (for existing databases without role)
+  const cols = await db.all("PRAGMA table_info(users)");
+  const hasRole = cols.some(c => c.name === 'role');
+  if (!hasRole) {
+    await db.exec("ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'");
+  }
+
+  // Seed admin user if not exists
+  const adminEmail = 'it-support@example.com';
+  const adminPass = 'It-support1234';
+  const admin = await db.get('SELECT id FROM users WHERE lower(email) = ?', [adminEmail]);
+  if (!admin) {
+    const salt = generateSalt();
+    const hash = hashPassword(adminPass, salt);
+    await db.run(
+      'INSERT INTO users (full_name, email, password_hash, password_salt, role, plan) VALUES (?, ?, ?, ?, ?, ?)',
+      ['Администратор', adminEmail, hash, salt, 'admin', null]
+    );
+  } else {
+    // Ensure role is admin and reset password to known admin password; normalize email to lowercase
+    const salt = generateSalt();
+    const hash = hashPassword(adminPass, salt);
+    await db.run('UPDATE users SET role = ?, password_hash = ?, password_salt = ?, email = ? WHERE id = ?', ['admin', hash, salt, adminEmail, admin.id]);
+  }
 }
 
 function requireAuth(req, res, next) {
@@ -83,16 +109,29 @@ function requireAuth(req, res, next) {
   next();
 }
 
+function requireAdmin(req, res, next) {
+  requireAuth(req, res, async () => {
+    try {
+      const user = await db.get('SELECT role FROM users WHERE id = ?', [req.userId]);
+      if (!user || user.role !== 'admin') return res.status(403).json({ error: 'forbidden' });
+      next();
+    } catch (_) {
+      return res.status(500).json({ error: 'server_error' });
+    }
+  });
+}
+
 // Auth routes
 app.post('/api/register', async (req, res) => {
   try {
     const { FIO, email, pass } = req.body;
     if (!FIO || !email || !pass) return res.status(400).json({ error: 'missing_fields' });
+    const emailLc = String(email).toLowerCase();
     const salt = generateSalt();
     const hash = hashPassword(pass, salt);
     const result = await db.run(
       'INSERT INTO users (full_name, email, password_hash, password_salt) VALUES (?, ?, ?, ?)',
-      [FIO, email, hash, salt]
+      [FIO, emailLc, hash, salt]
     );
     const userId = result.lastID;
     const sid = genSessionId();
@@ -111,7 +150,8 @@ app.post('/api/login', async (req, res) => {
   try {
     const { login, pass } = req.body;
     if (!login || !pass) return res.status(400).json({ error: 'missing_fields' });
-    const user = await db.get('SELECT * FROM users WHERE email = ?', [login]);
+    const loginLc = String(login).toLowerCase();
+    const user = await db.get('SELECT * FROM users WHERE lower(email) = ?', [loginLc]);
     if (!user) return res.status(401).json({ error: 'invalid_credentials' });
     const hash = hashPassword(pass, user.password_salt);
     if (hash !== user.password_hash) return res.status(401).json({ error: 'invalid_credentials' });
@@ -132,13 +172,88 @@ app.post('/api/logout', (req, res) => {
 });
 
 app.get('/api/me', requireAuth, async (req, res) => {
-  const user = await db.get('SELECT id, full_name, email, phone, city, plan, created_at FROM users WHERE id = ?', [req.userId]);
+  const user = await db.get('SELECT id, full_name, email, phone, city, plan, role, created_at FROM users WHERE id = ?', [req.userId]);
   res.json({ user });
 });
 
 app.put('/api/me', requireAuth, async (req, res) => {
-  const { full_name, phone, city, plan } = req.body;
-  await db.run('UPDATE users SET full_name = ?, phone = ?, city = ?, plan = ? WHERE id = ?', [full_name || null, phone || null, city || null, plan || null, req.userId]);
+  const { full_name, phone, city } = req.body;
+  await db.run('UPDATE users SET full_name = ?, phone = ?, city = ? WHERE id = ?', [full_name || null, phone || null, city || null, req.userId]);
+  res.json({ ok: true });
+});
+
+// Admin APIs
+const ALLOWED_PLANS = ['Базовый', 'Стандарт', 'Премиум'];
+
+app.get('/api/admin/users', requireAdmin, async (_req, res) => {
+  const rows = await db.all('SELECT id, full_name, email, phone, city, plan, role, created_at FROM users ORDER BY created_at DESC');
+  res.json({ users: rows });
+});
+
+app.put('/api/admin/users/:id/plan', requireAdmin, async (req, res) => {
+  const userId = Number(req.params.id);
+  const { plan } = req.body || {};
+  let normalizedPlan = null;
+  if (typeof plan === 'string') {
+    const trimmed = plan.trim();
+    normalizedPlan = (trimmed === '' || trimmed.toLowerCase() === 'нет тарифа') ? null : trimmed;
+  } else if (plan != null) {
+    normalizedPlan = plan;
+  }
+  if (normalizedPlan !== null && !ALLOWED_PLANS.includes(normalizedPlan)) return res.status(400).json({ error: 'invalid_plan' });
+  await db.run('UPDATE users SET plan = ? WHERE id = ?', [normalizedPlan, userId]);
+  res.json({ ok: true });
+});
+
+// Update full user (admin)
+app.put('/api/admin/users/:id', requireAdmin, async (req, res) => {
+  try {
+    const userId = Number(req.params.id);
+    let { full_name, email, phone, city, plan } = req.body || {};
+    if (email != null) email = String(email).toLowerCase();
+    let normalizedPlan = null;
+    if (typeof plan === 'string') {
+      const trimmed = plan.trim();
+      normalizedPlan = (trimmed === '' || trimmed.toLowerCase() === 'нет тарифа') ? null : trimmed;
+    } else if (plan != null) {
+      normalizedPlan = plan;
+    }
+    if (normalizedPlan !== null && !ALLOWED_PLANS.includes(normalizedPlan)) return res.status(400).json({ error: 'invalid_plan' });
+
+    // Build dynamic update
+    const fields = [];
+    const params = [];
+    if (typeof full_name !== 'undefined') { fields.push('full_name = ?'); params.push(full_name || null); }
+    if (typeof email !== 'undefined') { fields.push('email = ?'); params.push(email || null); }
+    if (typeof phone !== 'undefined') { fields.push('phone = ?'); params.push(phone || null); }
+    if (typeof city !== 'undefined') { fields.push('city = ?'); params.push(city || null); }
+    if (typeof plan !== 'undefined') { fields.push('plan = ?'); params.push(normalizedPlan); }
+    if (!fields.length) return res.status(400).json({ error: 'nothing_to_update' });
+    params.push(userId);
+
+    await db.run(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, params);
+    res.json({ ok: true });
+  } catch (e) {
+    if (e && e.message && e.message.includes('UNIQUE')) {
+      return res.status(409).json({ error: 'email_exists' });
+    }
+    res.status(500).json({ error: 'server_error' });
+  }
+});
+
+app.get('/api/admin/callbacks', requireAdmin, async (_req, res) => {
+  const rows = await db.all('SELECT id, name, phone, created_at FROM callbacks ORDER BY created_at DESC');
+  res.json({ callbacks: rows });
+});
+
+app.get('/api/admin/reviews', requireAdmin, async (_req, res) => {
+  const rows = await db.all('SELECT id, name, position, company, message, rating, created_at FROM reviews ORDER BY created_at DESC');
+  res.json({ reviews: rows });
+});
+
+app.delete('/api/admin/reviews/:id', requireAdmin, async (req, res) => {
+  const reviewId = Number(req.params.id);
+  await db.run('DELETE FROM reviews WHERE id = ?', [reviewId]);
   res.json({ ok: true });
 });
 
@@ -181,5 +296,6 @@ initDb().then(() => {
     console.log(`Server started on http://localhost:${PORT}`);
   });
 });
+
 
 
