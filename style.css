@@ -1131,3 +1131,13 @@ input[type="email"] {
     grid-row-gap: 8px;
   }
 }
+.images-index {
+  display: flex;
+  justify-content: center;
+}
+.images-index img  {
+  height: 400px;
+  border-radius: 20px;
+  box-shadow: 0 4px 100px rgba(0, 0, 0, 0.05);
+  margin: 10px;
+}
